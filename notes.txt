@@ -1,0 +1,24 @@
+11/14 (oops did in reverse):
+ - shifting towards more computation vs expertise as technology improves
+ - learn architectures, not design
+  | used reinforcement learning to control a 'controller' that would generate strings that described a neural net that would then be trained
+   + searching, but with a more intelligent controller involved
+   + what was the benefit vs just doing a dumb search? both methods generalizable, the controller was said to be optimized for the specific CIFAR dataset as well
+   + answered that grid search would've been much slower because space much much larger
+ - if you could take any dataset, train a few proxy neural nets that would generate one another, to produce final neural net that would fit to data, that would be ncie
+ - use "cell" (basically a controlled search space) to generate net, made it more efficient
+ - found that one of their generated nets performed slower on mobile phones because hardware different, so mobile phone latency taken into account in the reward that controlled the controller
+ - also these nets transferred better to other datasets
+
+ - searching for algorithms/optimizers
+ - same controller, use the string method so reward given to string
+ - optimizers, activation functions
+  | x * sigmoid(x) was one of the best functions
+    + i'ma use this lol
+ - data processing has lots of potential because they're manually tuned (YES)
+  | they did for augmentation
+ 
+ - weakness for this is the "cell" needs a search space still that we need to define
+ - search is still really expensive
+ - ENAS (efficient neural architecture search) is one proposed solution, search space is one large graph and each node is an architecture
+  | trick is the weights are shared between the nodes to speed up convergence
