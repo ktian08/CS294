@@ -37,4 +37,10 @@
    + choose complex actions
   | deep = interpret, reinforcement learning = complex actions
  - brain actually seems to work like deep reinforcement learning (deep learning and reinforcement learning), like basal ganglia = reward function
- - NOW: deep rl great in simple rules, learn simple skills, learn from imitation - CHALLENGING: humans learn much faster, humans can do transfer learning (OPEN PROBLEM), not clearn what reward function should be, not clear what role of prediction should be
+ - NOW: deep rl great in simple rules, learn simple skills, learn from imitatio
+ - CHALLENGING: humans learn much faster, humans can do transfer learning (OPEN PROBLEM), not clearn what reward function should be, not clear what role of prediction should be
+ - interesting thought: human main purpose is to sustain life, it may be beneficial for the reward function to be "negative" in the sense that any move that isn't optimal causes neurons in the neural net to be removed at random, this actually mimics real life when neurons are being pared during development. the objective would be to keep as many neurons as possible. if mistakes are made, then the neural net would become smaller but more specialized for the task at hand. if we start with a really large neural net (babies have rly large brains), we won't run into having a neural net that cannot generalize to the problem at hand. if we can couple this with prediction, i think we can come close to human intelligence? 
+
+8/24:
+ - Imitation learning
+ - 
