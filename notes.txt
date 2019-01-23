@@ -42,5 +42,18 @@
  - thought: human main purpose is to sustain life, it may be beneficial for the reward function to be "negative" in the sense that any move that isn't optimal causes neurons in the neural net to be removed at random, this actually mimics real life when neurons are being pared during development. the objective would be to keep as many neurons as possible. if mistakes are made, then the neural net would become smaller but more specialized for the task at hand. if we start with a really large neural net (babies have rly large brains), we won't run into having a neural net that cannot generalize to the problem at hand. if we can couple this with prediction, could be promising 
 
 8/24:
- - Imitation learning
- - 
+ - Sequential Decision Making
+   | state is entire world, underlying; observation is like pixel values
+ - Imitation Learning
+   | behavior cloning issue with finding new observations, causing slightly
+     different action, causing entirely new observations to be made, 
+     trajectory more and more off
+      + addition of noise and training on distributions with noise added
+        alleviates problem, this is very viable and used
+      + change distribution of data to closely match distribution of policy, 
+        this is done by manipulating the data itself instead of having a 
+	perfect policy
+ - Objective (in learning autonomously)
+   | reward function
+
+   
