@@ -1,2 +1,2 @@
 # CS294
-Deep RL - attempts at the assignments
+Deep RL - notes/assignments?
