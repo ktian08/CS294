@@ -45,7 +45,7 @@ def train():
 
         os.makedirs(args.ckpt, exist_ok=True)
         cp_callback = tf.keras.callbacks.ModelCheckpoint(
-            args.ckpt,
+            os.path.join(args.ckpt, 'weights.{epoch}-{val_loss:.4f}.hdf5'),
             save_weights_only=True,
             verbose=1)
 
