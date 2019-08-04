@@ -1,3 +1,4 @@
 .ipynb_checkpoints
 __pycache__/
-./hw1/expert_data/*
+.DS_Store
+TF_lecture.ipynb
