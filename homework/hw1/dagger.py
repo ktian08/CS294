@@ -14,9 +14,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('expert_policy_file', type=str)
     parser.add_argument('model_weights', type=str)
+    parser.add_argument('train_file', type=str)
     parser.add_argument('envname', type=str)
     parser.add_argument('--render', action='store_true')
-    parser.add_argument("--max_timesteps", type=int)
+    parser.add_argument('--max_timesteps', type=int)
+    parser.add_argument('--num_rollouts', type=int)
     args = parser.parse_args()
 
     print('loading and building expert policy')
@@ -33,10 +35,20 @@ def main():
         returns = []
         observations = []
         actions = []
+        
         model = bcloning.make_model(i=111, l1=64, l2=8)
         model.load_weights(args.model_weights)
-        print(model.summary())
-        for i in range(3):
+        model.compile(
+            optimizer=tf.keras.optimizers.SGD(lr=1e-4, decay=1e-6, 
+                                          momentum=0.9,
+                                          nesterov=True),
+            loss='mean_squared_error',
+            metrics=['mse'])
+        
+        expert_data = pickle.load(open(args.train_file, 'rb'))
+        expert_data['observations'] = np.expand_dims(expert_data['observations'], axis=1)
+
+        for i in range(args.num_rollouts):
             print('iter', i)
             obs = env.reset()
             done = False
@@ -56,10 +68,18 @@ def main():
                 if steps >= max_steps:
                     break
             returns.append(totalr)
-            
+
+            expert_data['observations'] = np.append(expert_data['observations'], 
+                                                    np.array(observations), 
+                                                    axis=0)
+            expert_data['actions'] = np.append(expert_data['actions'], 
+                                               np.array(actions), 
+                                               axis=0)
+            bcloning.train_dagger(model, expert_data, epochs=1, batch=1)
+
         print('returns', returns)
         print('mean return', np.mean(returns))
         print('std of return', np.std(returns))
-
+        
 if __name__ == '__main__':
     main()
