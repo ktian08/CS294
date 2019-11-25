@@ -38,14 +38,11 @@ def build_mlp(input_placeholder, output_size, scope, n_layers, size, activation=
         Hint: use tf.layers.dense    
     """
     # YOUR CODE HERE
-    model = tf.keras.models.Sequential()
-    for n in n_layers:
-        model.add(tf.keras.layers.Dense(size, activation=activation))
-    model.add(tf.keras.layers.Dense(output_size, activation=output_activation))
-
-    with tf.Session() as sess:
-        output_activation = sess.run(input_placeholder)
-        return output_activation
+    with tf.variable_scope(scope):
+        for n in n_layers:
+            input_placeholder = tf.layers.Dense(input_placeholder, size, activation=activation)
+        output_placeholder = tf.layers.Dense(input_placeholder, output_size, activation=output_activation))
+    return output_activation
 
 def pathlength(path):
     return len(path["reward"])
@@ -141,12 +138,12 @@ class Agent(object):
         """
         if self.discrete:
             # YOUR_CODE_HERE
-            sy_logits_na = build_mlp(sy_ob_no, self.ac_dim, None, self.n_layers, self.size)
+            sy_logits_na = build_mlp(sy_ob_no, self.ac_dim, 'agent', self.n_layers, self.size)
             return sy_logits_na
         else:
             # YOUR_CODE_HERE
-            sy_mean = build_mlp(sy_ob_no, self.ac_dim, None, self.n_layers, self.size)
-            sy_logstd = tf.placeholder
+            sy_mean = build_mlp(sy_ob_no, self.ac_dim, 'agent', self.n_layers, self.size)
+            sy_logstd = None
             return (sy_mean, sy_logstd)
 
     #========================================================================================#
