@@ -143,7 +143,7 @@ class Agent(object):
         else:
             # YOUR_CODE_HERE
             sy_mean = build_mlp(sy_ob_no, self.ac_dim, 'agent', self.n_layers, self.size)
-            sy_logstd = None
+            sy_logstd = tf.Variable(tf.zeros(self.ac_dim), name='logstd')
             return (sy_mean, sy_logstd)
 
     #========================================================================================#
