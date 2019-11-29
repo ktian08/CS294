@@ -173,15 +173,15 @@ class Agent(object):
         
                  This reduces the problem to just sampling z. (Hint: use tf.random_normal!)
         """
-        raise NotImplementedError
         if self.discrete:
             sy_logits_na = policy_parameters
             # YOUR_CODE_HERE
-            sy_sampled_ac = None
+            sy_sampled_ac = tf.multinomial(sy_logits_na, 1)
         else:
             sy_mean, sy_logstd = policy_parameters
             # YOUR_CODE_HERE
-            sy_sampled_ac = None
+            sy_sampled_n = tf.random_normal(self.ac_dim)
+            sy_sampled_ac = sy_mean + sy_logstd * sy_sampled_n
         return sy_sampled_ac
 
     #========================================================================================#
@@ -210,15 +210,19 @@ class Agent(object):
                 For the discrete case, use the log probability under a categorical distribution.
                 For the continuous case, use the log probability under a multivariate gaussian.
         """
-        raise NotImplementedError
         if self.discrete:
             sy_logits_na = policy_parameters
             # YOUR_CODE_HERE
-            sy_logprob_n = None
+            logit = tf.gather_nd(sy_logits_na, sy_ac_na)
+            prob = tf.nn.softmax(logit)
+            sy_logprob_n = tf.math.log(prob)
         else:
             sy_mean, sy_logstd = policy_parameters
             # YOUR_CODE_HERE
-            sy_logprob_n = None
+            std = tf.exp(sy_logstd)
+            z = (sy_ac_na - sy_mean) / std
+            sy_logprob_n = -self.ac_dim / 2 * math.log(2 * math.pi) - 0.5 * tf.math.square(z)
+            
         return sy_logprob_n
 
     def build_computation_graph(self):
