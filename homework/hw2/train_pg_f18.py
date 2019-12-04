@@ -41,7 +41,7 @@ def build_mlp(input_placeholder, output_size, scope, n_layers, size, activation=
     with tf.variable_scope(scope):
         for n in n_layers:
             input_placeholder = tf.layers.Dense(input_placeholder, size, activation=activation)
-        output_placeholder = tf.layers.Dense(input_placeholder, output_size, activation=output_activation))
+        output_placeholder = tf.layers.Dense(input_placeholder, output_size, activation=output_activation)
     return output_activation
 
 def pathlength(path):
@@ -213,15 +213,13 @@ class Agent(object):
         if self.discrete:
             sy_logits_na = policy_parameters
             # YOUR_CODE_HERE
-            logit = tf.gather_nd(sy_logits_na, sy_ac_na)
-            prob = tf.nn.softmax(logit)
-            sy_logprob_n = tf.math.log(prob)
+            sy_logprob_n = -tf.nn.sparse_softmax_cross_entropy_with_logits(sy_ac_na, sy_logits_na)
         else:
             sy_mean, sy_logstd = policy_parameters
             # YOUR_CODE_HERE
             std = tf.exp(sy_logstd)
             z = (sy_ac_na - sy_mean) / std
-            sy_logprob_n = -self.ac_dim / 2 * math.log(2 * math.pi) - 0.5 * tf.math.square(z)
+            sy_logprob_n = -self.ac_dim / 2.0 * math.log(2 * math.pi) - 0.5 * tf.math.square(z)
             
         return sy_logprob_n
 
@@ -263,7 +261,7 @@ class Agent(object):
         #                           ----------PROBLEM 2----------
         # Loss Function and Training Operation
         #========================================================================================#
-        loss = None # YOUR CODE HERE
+        loss = -tf.reduce_mean(self.sy_logprob_n * self.sy_adv_n) # YOUR CODE HERE
         self.update_op = tf.train.AdamOptimizer(self.learning_rate).minimize(loss)
 
         #========================================================================================#
@@ -311,8 +309,7 @@ class Agent(object):
             #====================================================================================#
             #                           ----------PROBLEM 3----------
             #====================================================================================#
-            raise NotImplementedError
-            ac = None # YOUR CODE HERE
+            ac = self.sy_sampled_ac # YOUR CODE HERE
             ac = ac[0]
             acs.append(ac)
             ob, rew, done, _ = env.step(ac)
@@ -395,10 +392,22 @@ class Agent(object):
             like the 'ob_no' and 'ac_na' above. 
         """
         # YOUR_CODE_HERE
+        gamma, q_n = 0.99, []
         if self.reward_to_go:
-            raise NotImplementedError
+            for path in re_n:
+                q, lst = 0, []
+                for t in range(len(path)):
+                    q *= gamma
+                    q += path[len(path) - t - 1] 
+                    lst.append(q)
+                q_n.extend(lst[::-1])
         else:
-            raise NotImplementedError
+            for path in re_n:
+                q, lst = 0, []
+                for r, t in enumerate(path):
+                    q += r * gamma ** t 
+                lst = [q] * len(path)
+                q_n.extend(lst)
         return q_n
 
     def compute_advantage(self, ob_no, q_n):
@@ -517,7 +526,7 @@ class Agent(object):
         # and after an update, and then log them below. 
 
         # YOUR_CODE_HERE
-        raise NotImplementedError
+        self.sess.run([self.update_op], feed_dict = {self.sy_ob_no: ob_no, self.sy_sampled_ac: ac_na, self.sy_adv_n: adv_n})
 
 
 def train_PG(
