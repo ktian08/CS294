@@ -403,7 +403,7 @@ class Agent(object):
         else:
             for path in re_n:
                 q, lst = 0, []
-                for r, t in enumerate(path):
+                for t, r in enumerate(path):
                     q += r * self.gamma ** t 
                 lst = [q] * len(path)
                 q_n.extend(lst)
